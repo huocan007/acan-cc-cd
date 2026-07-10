@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>acan — VPS & Server Configuration Services</title>
+<meta name="description" content="Reliable Linux server setup, Nginx, Cloudflare CDN, SSL/TLS and monitoring dashboards. Professional VPS configuration services." />
+<style>
+  :root{
+    --bg:#0b1120; --bg2:#0f172a; --card:#111c33; --card2:#16233f;
+    --line:#22304d; --text:#e6edf7; --muted:#94a3b8; --accent:#22d3ee;
+    --accent2:#34d399; --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;line-height:1.6}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  .btn{display:inline-block;padding:12px 22px;border-radius:10px;font-weight:600;transition:.2s}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04221f}
+  .btn-ghost{border:1px solid var(--line);color:var(--text)}
+  .btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+
+  /* NAV */
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(11,17,32,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;font-size:20px;letter-spacing:.5px}
+  .logo span{color:var(--accent)}
+  .nav nav{display:flex;gap:22px}
+  .nav nav a{color:var(--muted);font-size:14px}
+  .nav nav a:hover{color:var(--text)}
+
+  /* HERO */
+  .hero{padding:90px 0 70px;background:radial-gradient(1200px 400px at 70% -10%,rgba(34,211,238,.18),transparent),linear-gradient(180deg,var(--bg2),var(--bg))}
+  .hero h1{font-size:42px;line-height:1.15;margin-bottom:18px}
+  .hero h1 .hl{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--muted);font-size:18px;max-width:640px;margin-bottom:28px}
+  .hero .cta{display:flex;gap:14px;flex-wrap:wrap}
+
+  /* SECTION */
+  section{padding:64px 0}
+  h2.title{font-size:30px;margin-bottom:8px}
+  p.sub{color:var(--muted);margin-bottom:34px}
+  .grid{display:grid;gap:20px}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  .grid-2{grid-template-columns:repeat(2,1fr)}
+
+  /* CARDS */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;transition:.2s}
+  .card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
+  .card h3{font-size:18px;margin-bottom:10px}
+  .card p{color:var(--muted);font-size:14px}
+  .badge{display:inline-block;font-size:12px;color:var(--accent);border:1px solid var(--line);padding:2px 10px;border-radius:999px;margin-bottom:12px}
+
+  .shot{height:170px;border-radius:10px;background:linear-gradient(135deg,#13233f,#1c2f52);border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:10px;margin-bottom:16px}
+  .shot img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+  .process img{width:100%;border-radius:14px;border:1px solid var(--line);display:block;margin:0 auto}
+
+  /* PRICING */
+  .price{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;display:flex;flex-direction:column}
+  .price.featured{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+  .price .tier{font-size:14px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+  .price .amt{font-size:38px;font-weight:800;margin:6px 0 4px}
+  .price .amt small{font-size:15px;color:var(--muted);font-weight:500}
+  .price ul{list-style:none;margin:16px 0 22px;flex:1}
+  .price li{padding:7px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:14px;display:flex;gap:8px}
+  .price li::before{content:"✓";color:var(--accent2)}
+
+  /* FAQ */
+  .faq-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:12px}
+  .faq-item h4{font-size:15px;margin-bottom:6px;color:var(--text)}
+  .faq-item p{color:var(--muted);font-size:14px}
+
+  /* FOOTER / CONTACT */
+  footer{background:var(--bg2);border-top:1px solid var(--line);padding:50px 0 30px;text-align:center}
+  footer .cta{justify-content:center;margin:18px 0}
+  footer .muted{color:var(--muted);font-size:13px}
+  .links{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+  .links a{color:var(--accent)}
+
+  @media(max-width:860px){
+    .grid-3,.grid-2{grid-template-columns:1fr}
+    .nav nav{display:none}
+    .hero h1{font-size:32px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="wrap">
+    <div class="logo">acan<span>.cc</span></div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <!-- EDIT: replace with your real Fiverr URL -->
+      <a href="https://www.fiverr.com/acan903" class="btn btn-primary" style="padding:8px 16px">Hire me</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <h1>Reliable <span class="hl">VPS & Server</span><br/>Configuration Services</h1>
+    <p>Secure, high-performance Linux server setup — Nginx, Cloudflare CDN, SSL/TLS and monitoring dashboards, delivered clean and documented.</p>
+    <div class="cta">
+      <!-- EDIT: your Fiverr gig URL -->
+      <a href="https://www.fiverr.com/acan903" class="btn btn-primary">View my Fiverr Gig</a>
+      <a href="#portfolio" class="btn btn-ghost">See my work</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <div class="wrap">
+    <h2 class="title">About</h2>
+    <p class="sub">Who you're working with</p>
+    <div class="card">
+      <p>I help individuals and small teams get production-ready Linux servers without the trial-and-error. From a fresh VPS to a hardened, CDN-backed, monitored setup — I handle the configuration and leave you with clear documentation so you stay in control.</p>
+      <p style="margin-top:12px;color:var(--muted);font-size:14px">Stack I work with: Debian / Ubuntu · Nginx · Cloudflare · Let's Encrypt / Origin certificates · UFW / fail2ban · Uptime Kuma / Grafana.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="services">
+  <div class="wrap">
+    <h2 class="title">Services</h2>
+    <p class="sub">What I can set up for you</p>
+    <div class="grid grid-3">
+      <div class="card"><span class="badge">Hardening</span><h3>Server Setup & Hardening</h3><p>Initial Debian/Ubuntu setup, SSH key login, UFW firewall, fail2ban and sane defaults.</p></div>
+      <div class="card"><span class="badge">Web</span><h3>Nginx & Reverse Proxy</h3><p>Install Nginx, TLS redirect, security headers, rate limiting and clean reverse-proxy routes.</p></div>
+      <div class="card"><span class="badge">CDN</span><h3>Cloudflare Integration</h3><p>Connect your domain to Cloudflare: SSL mode, caching, WAF rules and Origin certificate.</p></div>
+      <div class="card"><span class="badge">SSL</span><h3>Free SSL / TLS</h3><p>Automated Let's Encrypt certificates with renewal, or Cloudflare Origin certs.</p></div>
+      <div class="card"><span class="badge">Ops</span><h3>Monitoring Dashboard</h3><p>Deploy Uptime Kuma / Grafana with a status page and alerts for your services.</p></div>
+      <div class="card"><span class="badge">Tuning</span><h3>Tuning & Troubleshooting</h3><p>Performance tuning, connection issues, and post-delivery 7-day support.</p></div>
+    </div>
+
+    <!-- Process diagram from user's screenshot -->
+    <div class="process" style="margin-top:44px">
+      <h3 style="font-size:22px;text-align:center;margin-bottom:8px">Your server, configured in 4 steps</h3>
+      <p style="text-align:center;color:var(--muted);margin-bottom:22px">From setup to CDN-backed deployment</p>
+      <img src="process.png" alt="Server configuration workflow: Setup, Security, Web Server, CDN" />
+    </div>
+  </div>
+</section>
+
+<!-- ============ PORTFOLIO ============ -->
+<section id="portfolio">
+  <div class="wrap">
+    <h2 class="title">Portfolio</h2>
+    <p class="sub">Recent configurations (details available on request)</p>
+    <div class="grid grid-3">
+      <!-- Card 1: Cloudflare Analytics (images/monitoring.png) -->
+      <div class="card">
+        <div class="shot"><img src="monitoring.png" alt="Cloudflare analytics dashboard showing traffic and requests"></div>
+        <h3>Cloudflare Analytics & Traffic Monitoring</h3>
+        <p>Live traffic dashboard for a production domain: requests, unique visitors and edge performance.</p>
+      </div>
+      <!-- Card 2 -->
+      <div class="card">
+        <div class="shot"><img src="nginx.png" alt="Nginx configuration test successful"></div>
+        <h3>Nginx Reverse Proxy & TLS</h3>
+        <p>Hardened Nginx in front of a web service: HTTPS redirect, security headers, rate limiting.</p>
+      </div>
+      <!-- Card 3: SSL/TLS Certificate -->
+      <div class="card">
+        <div class="shot"><img src="ssl.png" alt="Cloudflare SSL/TLS encryption mode set to Full"></div>
+        <h3>SSL / TLS Certificate Setup</h3>
+        <p>Automated HTTPS certificates (Let's Encrypt / Cloudflare Origin) with renewal and HSTS configured.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="pricing">
+  <div class="wrap">
+    <h2 class="title">Pricing</h2>
+    <p class="sub">Transparent tiers — same quality, scaled scope</p>
+    <div class="grid grid-3">
+      <div class="price">
+        <div class="tier">Basic</div>
+        <div class="amt">$25<small> /one-time</small></div>
+        <ul>
+          <li>Single server basic setup</li>
+          <li>Nginx install + SSL</li>
+          <li>Basic firewall hardening</li>
+          <li>Step-by-step docs</li>
+          <li>7-day support</li>
+        </ul>
+        <a href="https://www.fiverr.com/acan903" class="btn btn-ghost">Choose Basic</a>
+      </div>
+      <div class="price featured">
+        <div class="tier">Standard</div>
+        <div class="amt">$50<small> /one-time</small></div>
+        <ul>
+          <li>Everything in Basic</li>
+          <li>Cloudflare CDN integration</li>
+          <li>Nginx reverse proxy</li>
+          <li>Monitoring dashboard setup</li>
+          <li>7-day priority support</li>
+        </ul>
+        <a href="https://www.fiverr.com/acan903" class="btn btn-primary">Choose Standard</a>
+      </div>
+      <div class="price">
+        <div class="tier">Premium</div>
+        <div class="amt">$90<small> /one-time</small></div>
+        <ul>
+          <li>Everything in Standard</li>
+          <li>Multi-server / advanced setup</li>
+          <li>Advanced security tuning</li>
+          <li>Config review & handover</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="https://www.fiverr.com/acan903" class="btn btn-ghost">Choose Premium</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="wrap">
+    <h2 class="title">FAQ</h2>
+    <p class="sub">Before you order</p>
+    <div class="faq-item"><h4>Do you need root access?</h4><p>Yes — root or sudo is required to configure the server.</p></div>
+    <div class="faq-item"><h4>Which OS do you support?</h4><p>Debian and Ubuntu (preferred). Other distros on request.</p></div>
+    <div class="faq-item"><h4>How fast is delivery?</h4><p>Usually 1–3 days depending on tier and current queue.</p></div>
+    <div class="faq-item"><h4>Do you provide after-sales support?</h4><p>Yes — 7-day support on every tier; priority on Standard/Premium.</p></div>
+    <div class="faq-item"><h4>Can you handle Cloudflare?</h4><p>Yes, including CDN, SSL/TLS and WAF security rules.</p></div>
+  </div>
+</section>
+
+<!-- ============ FOOTER / CONTACT ============ -->
+<footer id="contact">
+  <div class="wrap">
+    <h2 class="title">Let's get your server production-ready</h2>
+    <div class="cta" style="display:flex">
+      <!-- EDIT: your Fiverr gig URL -->
+      <a href="https://www.fiverr.com/acan903" class="btn btn-primary">Order on Fiverr</a>
+    </div>
+    <div class="links">
+      <a href="https://www.fiverr.com/acan903">Fiverr: @acan903</a>
+      <!-- EDIT: add email / other contact if you want -->
+    </div>
+    <p class="muted" style="margin-top:22px">© 2026 acan.cc.cd · Built with clarity, delivered with docs.</p>
+  </div>
+</footer>
+
+</body>
+</html>
